@@ -11,7 +11,7 @@ import {
   logoutUser,
 } from '../controllers/authController.js';
 
-export const authRouter = Router();
+const authRouter = Router();
 
 authRouter.post(
   '/register',
@@ -24,3 +24,5 @@ authRouter.post('/login', celebrate({ body: loginUserSchema }), loginUser);
 authRouter.post('/refresh', refreshUserSession);
 
 authRouter.post('/logout', logoutUser);
+
+export default authRouter;
