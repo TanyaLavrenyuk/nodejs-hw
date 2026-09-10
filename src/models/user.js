@@ -17,6 +17,9 @@ const userSchema = new Schema(
       required: true,
       minlength: 8,
     },
+    avatar: {
+      type: String,
+    },
   },
   {
     timestamps: true,
