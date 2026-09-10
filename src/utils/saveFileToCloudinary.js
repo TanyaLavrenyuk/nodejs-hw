@@ -1,5 +1,5 @@
 import { v2 as cloudinary } from 'cloudinary';
-import streamifier from 'streamifier';
+import { Readable } from 'node:stream';
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -23,6 +23,6 @@ export const saveFileToCloudinary = async (fileBuffer, userId) => {
       },
     );
 
-    streamifier.createReadStream(fileBuffer).pipe(stream);
+    Readable.from(fileBuffer).pipe(stream);
   });
 };
