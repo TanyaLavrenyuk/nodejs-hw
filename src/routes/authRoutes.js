@@ -18,25 +18,25 @@ import {
 const authRouter = Router();
 
 authRouter.post(
-  '/register',
+  '/auth/register',
   celebrate({ body: registerUserSchema }),
   registerUser,
 );
 
-authRouter.post('/login', celebrate({ body: loginUserSchema }), loginUser);
+authRouter.post('/auth/login', celebrate({ body: loginUserSchema }), loginUser);
 
-authRouter.post('/refresh', refreshUserSession);
+authRouter.post('/auth/refresh', refreshUserSession);
 
-authRouter.post('/logout', logoutUser);
+authRouter.post('/auth/logout', logoutUser);
 
 authRouter.post(
-  '/send-reset-email',
+  '/auth/request-reset-email',
   celebrate({ body: requestResetEmailSchema }),
   requestResetEmail,
 );
 
 authRouter.post(
-  '/reset-pwd',
+  '/auth/reset-password',
   celebrate({ body: resetPasswordSchema }),
   resetPassword,
 );

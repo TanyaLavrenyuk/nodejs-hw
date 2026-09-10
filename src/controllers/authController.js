@@ -2,11 +2,17 @@ import createHttpError from 'http-errors';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import fs from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import handlebars from 'handlebars';
 import { User } from '../models/user.js';
 import { Session } from '../models/session.js';
 import { createSession, setSessionCookies } from '../services/auth.js';
 import { sendEmail } from '../utils/sendMail.js';
 import { saveFileToCloudinary } from '../utils/cloudinary.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export const registerUser = async (req, res, next) => {
   const { email, password } = req.body;
@@ -113,14 +119,31 @@ export const requestResetEmail = async (req, res, next) => {
 
   const resetPasswordLink = `${process.env.FRONTEND_DOMAIN}/reset-password?token=${resetToken}`;
 
+  const templatePath = path.join(
+    __dirname,
+    '../templates/reset-password-email.html',
+  );
+
+  let templateSource;
+  try {
+    templateSource = await fs.readFile(templatePath, 'utf-8');
+  } catch (error) {
+    console.error(error);
+    throw createHttpError(500, 'Template error');
+  }
+
+  const template = handlebars.compile(templateSource);
+  const html = template({
+    name: user.name || user.email,
+    link: resetPasswordLink,
+  });
+
   try {
     await sendEmail({
+      from: process.env.SMTP_FROM,
       to: email,
       subject: 'Reset your password',
-      templateData: {
-        name: user.name || user.email,
-        link: resetPasswordLink,
-      },
+      html,
     });
   } catch (error) {
     console.error(error);
