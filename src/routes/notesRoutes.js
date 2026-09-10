@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { celebrate } from 'celebrate';
+import { celebrate, Segments } from 'celebrate';
 import {
   getAllNotes,
   getNoteById,
@@ -19,14 +19,37 @@ const router = Router();
 
 router.use(authenticate);
 
-router.get('/notes', celebrate(getAllNotesSchema), getAllNotes);
+router.get(
+  '/notes',
+  celebrate({ [Segments.QUERY]: getAllNotesSchema }),
+  getAllNotes,
+);
 
-router.get('/notes/:noteId', celebrate(noteIdSchema), getNoteById);
+router.get(
+  '/notes/:noteId',
+  celebrate({ [Segments.PARAMS]: noteIdSchema }),
+  getNoteById,
+);
 
-router.post('/notes', celebrate(createNoteSchema), createNote);
+router.post(
+  '/notes',
+  celebrate({ [Segments.BODY]: createNoteSchema }),
+  createNote,
+);
 
-router.delete('/notes/:noteId', celebrate(noteIdSchema), deleteNote);
+router.delete(
+  '/notes/:noteId',
+  celebrate({ [Segments.PARAMS]: noteIdSchema }),
+  deleteNote,
+);
 
-router.patch('/notes/:noteId', celebrate(updateNoteSchema), updateNote);
+router.patch(
+  '/notes/:noteId',
+  celebrate({
+    [Segments.PARAMS]: noteIdSchema,
+    [Segments.BODY]: updateNoteSchema,
+  }),
+  updateNote,
+);
 
 export default router;
