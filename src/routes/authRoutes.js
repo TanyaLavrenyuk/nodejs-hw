@@ -13,10 +13,7 @@ import {
   logoutUser,
   requestResetEmail,
   resetPassword,
-  updateUserAvatar,
 } from '../controllers/authController.js';
-import { authenticate } from '../middleware/authenticate.js';
-import { upload } from '../middleware/upload.js';
 
 const authRouter = Router();
 
@@ -42,13 +39,6 @@ authRouter.post(
   '/reset-pwd',
   celebrate({ body: resetPasswordSchema }),
   resetPassword,
-);
-
-authRouter.patch(
-  '/update-avatar',
-  authenticate,
-  upload.single('avatar'),
-  updateUserAvatar,
 );
 
 export default authRouter;
